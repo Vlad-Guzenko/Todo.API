@@ -13,7 +13,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Todo.API.Models;
-
+using Todo.API.middlewares;
+using Todo.API.Extentions;
 
 namespace Todo.API
 {
@@ -33,9 +34,8 @@ namespace Todo.API
 
             services.AddDbContext<TodoContext>(options => options.UseSqlServer(connectionString));
 
-            //services.AddDbContext<TodoContext>(options => options.UseSqlServer(connectionString)).
-
             services.AddControllers();
+
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Todo.API", Version = "v1" });
@@ -47,14 +47,17 @@ namespace Todo.API
         {
             if (env.IsDevelopment())
             {
-                app.UseDeveloperExceptionPage();
+                //app.UseDeveloperExceptionPage();
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Todo.API v1"));
             }
 
             app.UseHttpsRedirection();
 
+            app.UseMyExceptionHandlingMiddleware();
+
             app.UseRouting();
+            
 
             app.UseAuthorization();
 
